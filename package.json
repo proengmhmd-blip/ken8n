@@ -29,7 +29,8 @@
     }
   },
   "dependencies": {
-    "pulumi-stripe": "0.0.24"
+    "pulumi-stripe": "0.0.24",
+    "zod-openapi": "5.4.0"
   },
   "devDependencies": {
     "prettier": "3.5.3",

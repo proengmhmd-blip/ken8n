@@ -5,6 +5,7 @@
       "name": "ken8n-coder",
       "dependencies": {
         "pulumi-stripe": "0.0.24",
+        "zod-openapi": "5.4.0",
       },
       "devDependencies": {
         "prettier": "3.5.3",
@@ -24,7 +25,7 @@
     },
     "cloud/core": {
       "name": "@ken8n-coder/cloud-core",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "dependencies": {
         "@aws-sdk/client-sts": "3.782.0",
         "drizzle-orm": "0.41.0",
@@ -38,7 +39,7 @@
     },
     "cloud/function": {
       "name": "@ken8n-coder/cloud-function",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "dependencies": {
         "@ai-sdk/anthropic": "2.0.0",
         "@ai-sdk/openai": "2.0.2",
@@ -58,7 +59,7 @@
     },
     "cloud/web": {
       "name": "@ken8n-coder/cloud-web",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "dependencies": {
         "@kobalte/core": "0.13.9",
         "@openauthjs/solid": "0.0.0-20250322224806",
@@ -77,7 +78,7 @@
     },
     "packages/function": {
       "name": "@ken8n-coder/function",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "dependencies": {
         "@octokit/auth-app": "8.0.1",
         "@octokit/rest": "22.0.0",
@@ -92,7 +93,7 @@
     },
     "packages/ken8n-coder": {
       "name": "ken8n-coder",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "bin": {
         "ken8n-coder": "./bin/ken8n-coder",
       },
@@ -145,7 +146,7 @@
     },
     "packages/plugin": {
       "name": "@ken8n-coder/plugin",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "dependencies": {
         "@ken8n-coder/sdk": "workspace:*",
       },
@@ -157,7 +158,7 @@
     },
     "packages/sdk/js": {
       "name": "@ken8n-coder/sdk",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "devDependencies": {
         "@hey-api/openapi-ts": "0.80.1",
         "@tsconfig/node22": "catalog:",
@@ -166,7 +167,7 @@
     },
     "packages/web": {
       "name": "@ken8n-coder/web",
-      "version": "0.5.4",
+      "version": "2.4.4",
       "dependencies": {
         "@astrojs/cloudflare": "12.6.3",
         "@astrojs/markdown-remark": "6.3.1",
@@ -3036,7 +3037,7 @@
 
     "zod": ["zod@3.25.76", "", {}, "sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ=="],
 
-    "zod-openapi": ["zod-openapi@4.1.0", "", { "peerDependencies": { "zod": "^3.21.4" } }, "sha512-bRCwRYhEO9CmFLyKgJX8h6j1dRtRiwOe+TLzMVPyV0pRW5vRIgb1rLgIGcuRZ5z3MmSVrZqbv3yva4IJrtZK4g=="],
+    "zod-openapi": ["zod-openapi@5.4.0", "", { "peerDependencies": { "zod": "^3.25.74 || ^4.0.0" } }, "sha512-5FdEnJmeNFmSEzfoH10GGF0OQFtSkJCnoXBZR618/Aozv2NF7dhS6y4dj+88rwAgNezbUH+9GJC3QsEiyu3rUQ=="],
 
     "zod-to-json-schema": ["zod-to-json-schema@3.24.5", "", { "peerDependencies": { "zod": "^3.24.1" } }, "sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g=="],
 
@@ -3283,6 +3284,8 @@
     "ignore-walk/minimatch": ["minimatch@9.0.5", "", { "dependencies": { "brace-expansion": "^2.0.1" } }, "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow=="],
 
     "ken8n-coder/@openauthjs/openauth": ["@openauthjs/openauth@0.4.3", "", { "dependencies": { "@standard-schema/spec": "1.0.0-beta.3", "aws4fetch": "1.0.20", "jose": "5.9.6" }, "peerDependencies": { "arctic": "^2.2.2", "hono": "^4.0.0" } }, "sha512-RlnjqvHzqcbFVymEwhlUEuac4utA5h4nhSK/i2szZuQmxTIqbGUxZ+nM+avM+VV4Ing+/ZaNLKILoXS3yrkOOw=="],
+
+    "ken8n-coder/zod-openapi": ["zod-openapi@4.1.0", "", { "peerDependencies": { "zod": "^3.21.4" } }, "sha512-bRCwRYhEO9CmFLyKgJX8h6j1dRtRiwOe+TLzMVPyV0pRW5vRIgb1rLgIGcuRZ5z3MmSVrZqbv3yva4IJrtZK4g=="],
 
     "lambda-local/commander": ["commander@10.0.1", "", {}, "sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug=="],
 
