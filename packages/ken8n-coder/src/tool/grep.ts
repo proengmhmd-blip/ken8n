@@ -45,6 +45,10 @@ export const GrepTool = Tool.define("grep", {
     }
 
     if (exitCode !== 0) {
+      // Provide a clearer hint on Windows when rg isn't available
+      if (process.platform === "win32") {
+        throw new Error(`ripgrep failed: ${errorOutput}\nIf this is a first run on Windows, try again to allow auto-download, or install ripgrep manually and ensure rg.exe is on PATH.`)
+      }
       throw new Error(`ripgrep failed: ${errorOutput}`)
     }
 

@@ -1,13 +1,17 @@
 import fs from "fs/promises"
 import { xdgData, xdgCache, xdgConfig, xdgState } from "xdg-basedir"
 import path from "path"
+import os from "os"
 
 const app = "ken8n-coder"
 
-const data = path.join(xdgData || "~/.local/share", app)
-const cache = path.join(xdgCache || "~/.cache", app)
-const config = path.join(xdgConfig || "~/.config", app)
-const state = path.join(xdgState || "~/.local/state", app)
+// Cross-platform app data directories with sane fallbacks.
+// Avoid using raw "~" which is not expanded automatically on Windows.
+const home = os.homedir()
+const data = path.join(xdgData || path.join(home, ".local", "share"), app)
+const cache = path.join(xdgCache || path.join(home, ".cache"), app)
+const config = path.join(xdgConfig || path.join(home, ".config"), app)
+const state = path.join(xdgState || path.join(home, ".local", "state"), app)
 
 export namespace Global {
   export const Path = {

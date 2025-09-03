@@ -220,6 +220,10 @@ function getOpencodeCommand(): string[] {
 
   if (Installation.isDev()) {
     // In development, use bun to run the TypeScript entry point
+    // On Windows, execPath may point to bun.exe; otherwise rely on PATH
+    if (process.platform === "win32") {
+      return [execPath.endsWith("bun.exe") ? execPath : "bun", "run", process.argv[1]]
+    }
     return [execPath, "run", process.argv[1]]
   }
 

@@ -252,6 +252,10 @@ fi
 
 print_message info "🎉 ${PINK}ken8n-coder v${specific_version}${BLUE} installed successfully!"
 
+print_message info ""
+print_message info "On Windows PowerShell you can install with:"
+print_message info "  iwr -useb https://raw.githubusercontent.com/KenKaiii/ken8n-coder/main/install.ps1 | iex"
+
 # Update or install MCP servers
 update_mcp_servers() {
   local MCP_DIR="$HOME/.ken8n-coder/mcp"

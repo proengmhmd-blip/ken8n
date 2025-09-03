@@ -6,9 +6,10 @@
   "packageManager": "bun@1.2.19",
   "scripts": {
     "dev": "bun run --conditions=development packages/ken8n-coder/src/index.ts",
+    "dev:win": "powershell -ExecutionPolicy Bypass -File ./ken8n-coder.ps1",
     "typecheck": "bun run --filter='*' typecheck",
     "generate": "(cd packages/sdk && ./js/script/generate.ts) && (cd packages/sdk/stainless && ./generate.ts)",
-    "postinstall": "./script/hooks"
+    "postinstall": "node ./script/postinstall.ts"
   },
   "workspaces": {
     "packages": [

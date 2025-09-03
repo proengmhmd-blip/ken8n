@@ -67,10 +67,15 @@ export namespace Installation {
         name: "bun" as const,
         command: () => $`bun pm ls -g`.throws(false).text(),
       },
-      {
-        name: "brew" as const,
-        command: () => $`brew list --formula opencode-ai`.throws(false).text(),
-      },
+      // brew is macOS only, guard by platform
+      ...(process.platform === "darwin"
+        ? ([
+            {
+              name: "brew" as const,
+              command: () => $`brew list --formula opencode-ai`.throws(false).text(),
+            },
+          ] as const)
+        : ([] as const)),
     ]
 
     checks.sort((a, b) => {

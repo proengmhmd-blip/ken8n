@@ -246,6 +246,20 @@ bun install
 bun dev
 ```
 
+#### Windows 10 Setup
+
+```powershell
+# Install Bun if not present
+irm https://bun.sh/install.ps1 | iex
+
+# From repo root, run the local CLI (dev mode)
+./ken8n-coder.ps1
+
+# Or install globally via npm (requires Bun in PATH)
+npm i -g ken8n-coder@latest
+ken8n-coder
+```
+
 Requirements:
 
 - Bun (package manager)
