@@ -133,6 +133,16 @@ export namespace Provider {
         },
       }
     },
+    perplexity: async () => {
+      return {
+        autoload: false,
+        options: {
+          headers: {
+            "User-Agent": "ken8n-coder",
+          },
+        },
+      }
+    },
   }
 
   const state = App.state("provider", async () => {
