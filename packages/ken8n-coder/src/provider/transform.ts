@@ -36,6 +36,9 @@ export namespace ProviderTransform {
       openaiCompatible: {
         cache_control: { type: "ephemeral" },
       },
+      perplexity: {
+        cache_control: { type: "ephemeral" },
+      },
     }
 
     for (const msg of unique([...system, ...final])) {
