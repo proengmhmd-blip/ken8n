@@ -57,7 +57,7 @@ export namespace ModelsDev {
     let models = result ? result as Record<string, Provider> : JSON.parse(await data()) as Record<string, Provider>
     
     // Add custom Perplexity provider
-    models.perplexity = {
+    models["perplexity"] = {
       id: "perplexity",
       name: "Perplexity AI",
       npm: "@ai-sdk/perplexity",
