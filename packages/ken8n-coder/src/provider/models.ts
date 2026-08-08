@@ -54,9 +54,59 @@ export namespace ModelsDev {
     refresh()
     const file = Bun.file(filepath)
     const result = await file.json().catch(() => {})
-    if (result) return result as Record<string, Provider>
-    const json = await data()
-    return JSON.parse(json) as Record<string, Provider>
+    let models = result ? result as Record<string, Provider> : JSON.parse(await data()) as Record<string, Provider>
+    
+    // Add custom Perplexity provider
+    models["perplexity"] = {
+      id: "perplexity",
+      name: "Perplexity AI",
+      npm: "@ai-sdk/perplexity",
+      env: ["PERPLEXITY_API_KEY"],
+      models: {
+        "sonar-pro": {
+          id: "sonar-pro",
+          name: "Sonar Pro",
+          release_date: "2024-07-01",
+          attachment: false,
+          reasoning: true,
+          temperature: true,
+          tool_call: true,
+          cost: {
+            input: 1.0,
+            output: 1.0,
+            cache_read: 0.1,
+            cache_write: 0.5
+          },
+          limit: {
+            context: 127072,
+            output: 4096
+          },
+          options: {}
+        },
+        "sonar": {
+          id: "sonar",
+          name: "Sonar",
+          release_date: "2024-07-01",
+          attachment: false,
+          reasoning: true,
+          temperature: true,
+          tool_call: true,
+          cost: {
+            input: 0.2,
+            output: 0.2,
+            cache_read: 0.02,
+            cache_write: 0.1
+          },
+          limit: {
+            context: 127072,
+            output: 4096
+          },
+          options: {}
+        }
+      }
+    }
+    
+    return models
   }
 
   export async function refresh() {

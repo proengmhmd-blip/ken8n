@@ -4,8 +4,9 @@
 # Store the current working directory where the command was invoked
 CURRENT_DIR="$(pwd)"
 
-# Change to the project directory to access the executable
-cd /home/ken/Projects/ken8n-coder/ken8n-coder
+# Change to the ken8n-coder directory (dynamically find it)
+SCRIPT_DIR="$(dirname "$0")"
+cd "$SCRIPT_DIR"
 
 # Set up bun path and run with the original working directory as project
 export PATH="$HOME/.bun/bin:$PATH"
