@@ -1,0 +1,148 @@
+{
+  "name": "YouTube Viral Trends Monitor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "value": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "code": "// YouTube Data API configuration\nconst API_KEY = $('Set YouTube API Key').first().json.apiKey;\nconst BASE_URL = 'https://www.googleapis.com/youtube/v3';\n\n// Get trending videos from multiple regions\nconst regions = ['US', 'GB', 'CA', 'AU', 'IN'];\nconst allVideos = [];\n\nfor (const region of regions) {\n  const url = `${BASE_URL}/videos?part=snippet,statistics,contentDetails&chart=mostPopular&regionCode=${region}&maxResults=50&key=${API_KEY}`;\n  \n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    \n    if (data.items) {\n      for (const video of data.items) {\n        const stats = video.statistics;\n        const snippet = video.snippet;\n        \n        // Calculate engagement rate\n        const views = parseInt(stats.viewCount || 0);\n        const likes = parseInt(stats.likeCount || 0);\n        const comments = parseInt(stats.commentCount || 0);\n        const engagementRate = views > 0 ? ((likes + comments) / views * 100).toFixed(2) : 0;\n        \n        // Calculate trend score (custom algorithm)\n        const hoursOld = (new Date() - new Date(snippet.publishedAt)) / (1000 * 60 * 60);\n        const trendScore = hoursOld > 0 ? (views / hoursOld * (1 + likes/views)).toFixed(2) : 0;\n        \n        // Only include videos with high engagement (viral potential)\n        if (engagementRate > 0.5 || views > 100000) {\n          allVideos.push({\n            videoId: video.id,\n            title: snippet.title,\n            channel: snippet.channelTitle,\n            views: views,\n            likes: likes,\n            comments: comments,\n            uploadDate: snippet.publishedAt,\n            region: region,\n            engagementRate: parseFloat(engagementRate),\n            trendScore: parseFloat(trendScore),\n            url: `https://www.youtube.com/watch?v=${video.id}`,\n            thumbnail: snippet.thumbnails.medium?.url || '',\n            duration: video.contentDetails.duration,\n            tags: snippet.tags?.slice(0, 5) || [],\n            categoryId: snippet.categoryId\n          });\n        }\n      }\n    }\n  } catch (error) {\n    console.error(`Error fetching data for region ${region}:`, error);\n  }\n}\n\n// Sort by trend score descending\nallVideos.sort((a, b) => b.trendScore - a.trendScore);\n\n// Return top 20 viral videos\nreturn allVideos.slice(0, 20);"
+      },
+      "id": "fetch-youtube-data",
+      "name": "Fetch YouTube Trends",
+      "type": "@kenkaiii/n8n-nodes-supercode.superCodeNodeVmSafe",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "apiKey": "={{ $('Set YouTube API Key').first().json.apiKey }}"
+      },
+      "id": "set-youtube-key",
+      "name": "Set YouTube API Key",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [240, 180],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "apiKey",
+              "value": "YOUR_YOUTUBE_API_KEY_HERE"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "parameters": {
+        "code": "// Format data for Google Sheets\nconst inputData = $input.all();\nconst formattedRows = [];\n\n// Add header row if this is the first batch\nformattedRows.push([\n  'Video ID',\n  'Title', \n  'Channel',\n  'Views',\n  'Likes',\n  'Comments',\n  'Upload Date',\n  'Region',\n  'Engagement Rate (%)',\n  'Trend Score',\n  'URL',\n  'Duration',\n  'Tags',\n  'Fetched At'\n]);\n\n// Add data rows\nfor (const item of inputData) {\n  const video = item.json;\n  formattedRows.push([\n    video.videoId,\n    video.title.substring(0, 100), // Limit title length\n    video.channel,\n    video.views,\n    video.likes,\n    video.comments,\n    new Date(video.uploadDate).toLocaleDateString(),\n    video.region,\n    video.engagementRate,\n    video.trendScore,\n    video.url,\n    video.duration,\n    video.tags.join(', '),\n    new Date().toLocaleString()\n  ]);\n}\n\nreturn { rows: formattedRows };"
+      },
+      "id": "format-for-sheets",
+      "name": "Format for Google Sheets",
+      "type": "@kenkaiii/n8n-nodes-supercode.superCodeNodeVmSafe",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "resource": "sheet",
+        "operation": "appendOrUpdate",
+        "documentId": "YOUR_GOOGLE_SHEET_ID_HERE",
+        "sheetName": "YouTube Trends",
+        "columnToMatchOn": "A",
+        "valueInputMode": "raw",
+        "dataMode": "define",
+        "values": "={{ $json.rows }}",
+        "options": {
+          "rawData": true,
+          "usePathForKeyAsName": true
+        }
+      },
+      "id": "google-sheets-append",
+      "name": "Add to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "code": "// Send summary notification\nconst videos = $('Format for Google Sheets').first().json.rows;\nconst videoCount = videos.length - 1; // Subtract header row\n\nif (videoCount > 0) {\n  const topVideo = videos[1]; // First data row after header\n  \n  const summary = {\n    message: `Found ${videoCount} viral YouTube videos`,\n    topVideo: {\n      title: topVideo[1],\n      channel: topVideo[2], \n      views: topVideo[3],\n      trendScore: topVideo[9]\n    },\n    timestamp: new Date().toLocaleString(),\n    sheetsUpdated: true\n  };\n  \n  return summary;\n} else {\n  return {\n    message: 'No viral videos found in this scan',\n    timestamp: new Date().toLocaleString(),\n    sheetsUpdated: false\n  };\n}"
+      },
+      "id": "create-summary",
+      "name": "Create Summary",
+      "type": "@kenkaiii/n8n-nodes-supercode.superCodeNodeVmSafe", 
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "Fetch YouTube Trends",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch YouTube Trends": {
+      "main": [
+        [
+          {
+            "node": "Format for Google Sheets", 
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Add to Google Sheets",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Create Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1.0.0",
+  "staticData": null,
+  "pinData": {}
+}
